@@ -1,4 +1,11 @@
-import Store from "./src/index.js";
+import WEBSTORE from "./src/index.js";
+import { createStore, get, set, clear } from "idb-keyval";
+
+/** 
+ * idb-keyval:{@link https://github.com/jakearchibald/idb-keyval} 
+ * @type {IDBFactory}
+*/
+const storeEntry = createStore(`${WEBSTORE.name}_DB`, WEBSTORE.namespace)
 
 /** 
  * HTML@Attributes:{@link https://html.spec.whatwg.org/multipage/dom.html#attributes} 
@@ -7,32 +14,28 @@ import Store from "./src/index.js";
 const observings = new Map([
     ['version', String(1)],
 ]);
+
+const lifecycle = {
+    isObserved: notifier,
+    isMounted: async ()=>console.log(await get('version', storeEntry)),
+    isDestroyed: async ()=>console.log(`${WEBSTORE.namespace} isDestroyed`, await clear(storeEntry))
+}
+
+/** 
+HOW TO USE
+* - prefix [globalThis.] is optional, we can simply change 'version' as follows:
+* - webstore.version = 2; // # "version has changed from 1 to 2"
+*/
 function notifier(property, oldValue, newValue) {
     switch (property) {
         case 'version':
-            if (Store.hasChanged(oldValue, newValue)){
-                console.log(`${property} has changed from ${oldValue} to ${newValue}`) // # version has changed from null to 1 (this is subject to change)
-            }
+            WEBSTORE.hasChanged(oldValue, newValue) ? set(property, newValue, storeEntry) : set(property, oldValue, storeEntry) ;
             break;
-        default:
-            console.warn("SWITCH_STATEMENT : \nCURRENTLY YOU ARE OBSERVING NOTHING, IF YOU WANT TO OBSERVE SOMETHING,\nREGISTER YOUR OBSERVINGS as Map<Key, Value> PAIRS")
     }
 }
-
-globalThis.observer = Store(
-    'component-observer',
+globalThis.webstore = WEBSTORE(
+    WEBSTORE.namespace,
     observings,
-    {
-        isObserved: notifier,
-        /* DEV_NOTE (!) # isMounted logs only on the very first load of web-component */
-        isMounted: ()=> console.log("isMounted"),
-        /* DEV_NOTE # isDestroyed triggers when you remove web-component via DOM calls such as .removeChild(ref) | .remove(self) */
-        isDestroyed: ()=> console.log("isDestroyed")
-    }
+    lifecycle
 )
-
-/** 
-> HOW TO USE
-* - prefix [globalThis.] is optional, we can simply change 'version' as follows:
-*/
-observer.version = 2 // "version has changed from 1 to 2"
+document.body.appendChild(webstore)

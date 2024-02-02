@@ -1,3 +1,10 @@
+/** credits:{@link https://gist.github.com/rmehner/b9a41d9f659c9b1c3340?permalink_comment_id=2940034#gistcomment-2940034} */
+async function deleteAll(){
+const dbs = await window.indexedDB.databases()
+dbs.forEach(db => { window.indexedDB.deleteDatabase(db.name) })
+}
+window.indexedDB[deleteAll.name] = deleteAll;
+
 export function registerAttrs(list){
     registerGetterSetter.prototype._attrs = [...list];
     return (
