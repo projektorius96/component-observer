@@ -1,5 +1,5 @@
 import { registerAttrs, registerGetterSetter, hasChanged } from './utils/index.js';
-export default function Store(namespace, observings, lifecycle = {isMounted: null, isDestroyed: null, isObserved: null}){
+export default function Component_Observer(namespace, observings, lifecycle = {isMounted: null, isDestroyed: null, isObserved: null}){
 
     customElements.define(String( namespace ), class extends HTMLElement {
 
@@ -18,7 +18,7 @@ export default function Store(namespace, observings, lifecycle = {isMounted: nul
 
         attributeChangedCallback(...params) {
 
-            if (lifecycle.isObserved && typeof lifecycle.isObserved === Function.name.toLowerCase()){
+            if (typeof lifecycle.isObserved === Function.name.toLowerCase()){
                 lifecycle.isObserved(...params)
             }
 
@@ -26,7 +26,7 @@ export default function Store(namespace, observings, lifecycle = {isMounted: nul
 
         connectedCallback(){
 
-            if (lifecycle.isMounted && typeof lifecycle.isMounted === Function.name.toLowerCase()){
+            if (typeof lifecycle.isMounted === Function.name.toLowerCase()){
                 lifecycle.isMounted()
             }
 
@@ -34,7 +34,7 @@ export default function Store(namespace, observings, lifecycle = {isMounted: nul
 
         disconnectedCallback(){
 
-            if (lifecycle.isDestroyed && typeof lifecycle.isDestroyed === Function.name.toLowerCase()){
+            if (typeof lifecycle.isDestroyed === Function.name.toLowerCase()){
                 lifecycle.isDestroyed()
             }
 
@@ -48,5 +48,6 @@ export default function Store(namespace, observings, lifecycle = {isMounted: nul
 
 }
 
-Store[hasChanged.name] = hasChanged;
+Component_Observer[hasChanged.name] = hasChanged;
+Component_Observer.namespace = Component_Observer.name.toLowerCase().replace("_", "-")
 

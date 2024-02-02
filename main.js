@@ -1,16 +1,9 @@
-import Store from "./src/index.js";
+import Observer from "./src/index.js";
 
-/** 
- * HTML@Attributes:{@link https://html.spec.whatwg.org/multipage/dom.html#attributes} 
- * @type {Map} - registers Map<Key, Value> pair(s)
-*/
-const observings = new Map([
-    ['version', String(1)],
-]);
 function notifier(property, oldValue, newValue) {
     switch (property) {
         case 'version':
-            if (Store.hasChanged(oldValue, newValue)){
+            if (Observer.hasChanged(oldValue, newValue)){
                 console.log(`${property} has changed from ${oldValue} to ${newValue}`) // # version has changed from null to 1 (this is subject to change)
             }
             break;
@@ -19,8 +12,16 @@ function notifier(property, oldValue, newValue) {
     }
 }
 
-globalThis.observer = Store(
-    'component-observer',
+/** 
+ * HTML@Attributes:{@link https://html.spec.whatwg.org/multipage/dom.html#attributes} 
+ * @type {Map} - registers Map<Key, Value> pair(s)
+*/
+const observings = new Map([
+    ['version', String(1)],
+]);
+
+globalThis.observer = Observer(
+    Observer.namespace,
     observings,
     {
         isObserved: notifier,
@@ -30,6 +31,7 @@ globalThis.observer = Store(
         isDestroyed: ()=> console.log("isDestroyed")
     }
 )
+document.body.appendChild(observer)
 
 /** 
 > HOW TO USE
