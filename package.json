@@ -1,17 +1,9 @@
 {
   "name": "component-observer",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
-  },
-  "devDependencies": {
-    "vite": "^5.0.12"
-  },
+  "author": "projektorius96",
   "dependencies": {
-    "idb-keyval": "^6.2.1",
-    "konva": "^9.3.1"
+    "idb-keyval": "^6.2.1"
   }
 }

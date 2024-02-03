@@ -2,10 +2,16 @@ import WEBSTORE from "./src/index.js";
 import { createStore, get, set, clear } from "idb-keyval";
 
 /** 
+ * @type {String} - database name
+ * > variable is re-used during cleanup within isDestroyed call
+*/
+const WEB_STORE_DB = `${WEBSTORE.name}_DB`
+
+/** 
  * idb-keyval:{@link https://github.com/jakearchibald/idb-keyval} 
  * @type {IDBFactory}
 */
-const storeEntry = createStore(`${WEBSTORE.name}_DB`, WEBSTORE.namespace)
+const storeEntry = createStore(WEB_STORE_DB, WEBSTORE.namespace)
 
 /** 
  * HTML@Attributes:{@link https://html.spec.whatwg.org/multipage/dom.html#attributes} 
@@ -18,7 +24,11 @@ const observings = new Map([
 const lifecycle = {
     isObserved: notifier,
     isMounted: async ()=>console.log(await get('version', storeEntry)),
-    isDestroyed: async ()=>console.log(`${WEBSTORE.namespace} isDestroyed`, await clear(storeEntry))
+    isDestroyed: async ()=>{
+        console.log(`${WEBSTORE.namespace} isDestroyed`);
+        await clear(storeEntry);///* # part of 'idb-keyval' : this clears the the store entries */
+        window.indexedDB.deleteDatabase(WEB_STORE_DB);///* # optionally programmatically delete a database itself : Application UI might show obsolete view (needs be re-opened) */
+    }
 }
 
 /** 
