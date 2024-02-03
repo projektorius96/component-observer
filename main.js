@@ -1,9 +1,9 @@
-import Observer from "./src/index.js";
+import WEB_STORE from "./src/index.js";
 
 function notifier(property, oldValue, newValue) {
     switch (property) {
         case 'version':
-            if (Observer.hasChanged(oldValue, newValue)){
+            if (WEB_STORE.hasChanged(oldValue, newValue)){
                 console.log(`${property} has changed from ${oldValue} to ${newValue}`) // # version has changed from null to 1 (this is subject to change)
             }
             break;
@@ -20,8 +20,8 @@ const observings = new Map([
     ['version', String(1)],
 ]);
 
-globalThis.observer = Observer(
-    Observer.namespace,
+globalThis.webstore = WEB_STORE(
+    WEB_STORE.namespace,
     observings,
     {
         isObserved: notifier,
@@ -31,10 +31,10 @@ globalThis.observer = Observer(
         isDestroyed: ()=> console.log("isDestroyed")
     }
 )
-document.body.appendChild(observer)
+document.body.appendChild(webstore)
 
 /** 
 > HOW TO USE
 * - prefix [globalThis.] is optional, we can simply change 'version' as follows:
 */
-observer.version = 2 // "version has changed from 1 to 2"
+webstore.version = 2 // "version has changed from 1 to 2"

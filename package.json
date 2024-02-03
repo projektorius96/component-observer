@@ -1,16 +1,9 @@
 {
   "name": "component-observer",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
-  },
+  "author": "projektorius96",
   "devDependencies": {
     "vite": "^5.0.12"
-  },
-  "dependencies": {
-    "konva": "^9.3.1"
   }
 }

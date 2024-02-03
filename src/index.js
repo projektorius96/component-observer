@@ -1,5 +1,5 @@
 import { registerAttrs, registerGetterSetter, hasChanged } from './utils/index.js';
-export default function Component_Observer(namespace, observings, lifecycle = {isMounted: null, isDestroyed: null, isObserved: null}){
+export default function WEB_STORE(namespace, observings, lifecycle = {isMounted: null, isDestroyed: null, isObserved: null}){
 
     customElements.define(String( namespace ), class extends HTMLElement {
 
@@ -48,6 +48,6 @@ export default function Component_Observer(namespace, observings, lifecycle = {i
 
 }
 
-Component_Observer[hasChanged.name] = hasChanged;
-Component_Observer.namespace = Component_Observer.name.toLowerCase().replace("_", "-")
+WEB_STORE[hasChanged.name] = hasChanged;
+WEB_STORE.namespace = WEB_STORE.name.toLowerCase().replace("_", "-")
 
