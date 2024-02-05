@@ -9,7 +9,7 @@ async function notifier(property, oldValue, newValue) {
                 await openDB(`${WEB_STORE.name}_DB`, Number(newValue), {
                     async upgrade(db, oldVersion, newVersion, transaction, event){
 
-                        console.log(oldVersion == oldValue, newVersion == newValue);
+                        /* console.log(oldVersion == oldValue, newVersion == newValue); */// [PASSING]
 
                         if (!db.objectStoreNames.contains(WEB_STORE.namespace)) {
         
@@ -25,30 +25,11 @@ async function notifier(property, oldValue, newValue) {
                         }
                         else {
             
-                            transaction.done.then(()=>{
-                                // NEXT_GOAL # create a new transaction and try to call db.put like so instead: 
-                                // example # /* db.put(WEB_STORE.namespace, newValue, property) */
+                            // [SOLVED] # Failed to execute 'objectStore' on 'IDBTransaction': The specified object store was not found.
+                            transaction.done.then(async ()=>{
+                                await db.put(WEB_STORE.namespace, newValue, property)
                             })
                         }
-
-                        // // transaction.addEventListener("complete",  function(e){
-                        // //     console.log("successful db.createObjectStore\n")
-                        // //     console.log("READY_TO_START_NEW_TRANSACTION \n");
-                        // //     console.log(currentStore); // # Failed to execute 'objectStore' on 'IDBTransaction': The specified object store was not found. (see below for explanation by JA)
-                        // //     // TL;DR: Do not await other things between the start and end of your transaction, otherwise the transaction will close before you're done.
-                        // //     // docs@https://github.com/jakearchibald/idb?tab=readme-ov-file#transaction-lifetime
-                        // // })
-                        // ///* DEV_NOTE # alternatively we could do something more close to nature of 'idb' wrapper */
-                        // transaction.done.then(()=>{
-                        //     console.log("successful db.createObjectStore\n")
-                        //     console.log("READY_TO_START_NEW_TRANSACTION \n");
-                        //     /* console.log(currentStore) */// # Failed to execute 'objectStore' on 'IDBTransaction': The specified object store was not found. (see below for explanation by JA)
-                        //     /* 
-                        //         TL;DR: Do not await other things between the start and end of your transaction, otherwise the transaction will close before you're done.
-                        //         docs@https://github.com/jakearchibald/idb?tab=readme-ov-file#transaction-lifetime
-                        //     */
-                        //    // DEV_NOTE (IDEA) # one way is to create new transaction and do stuff here, or jump just outside of openDB call and write the code there...
-                        // })
                         
                     }
                 })
