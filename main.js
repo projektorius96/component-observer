@@ -25,10 +25,11 @@ async function notifier(property, oldValue, newValue) {
                         }
                         else {
             
-                            // [SOLVED] # Failed to execute 'objectStore' on 'IDBTransaction': The specified object store was not found.
-                            transaction.done.then(async ()=>{
+                            // [SOLVED] # Failed to execute 'transaction' on 'IDBDatabase': A version change transaction is running
+                            transaction.done.then(async ()=>{/* as if transaction.oncomplete */
                                 await db.put(WEB_STORE.namespace, newValue, property)
                             })
+
                         }
                         
                     }
@@ -57,11 +58,14 @@ globalThis.webstore = WEB_STORE(
         /* DEV_NOTE (!) # isMounted logs only on the very first load of web-component */
         isMounted: ()=> console.log("isMounted"),
         /* DEV_NOTE # isDestroyed triggers when you remove web-component via DOM calls such as .removeChild(ref) | .remove(self) */
-        isDestroyed: ()=> console.log("isDestroyed")
+        isDestroyed: async ()=> {
+            console.log("isDestroyed")
+            await deleteDB(`${WEB_STORE.name}_DB`)
+        }
     }
 )
 
-/* document.body.appendChild(webstore) */// DEV_NOTE # adding to DOM is optional if it's planned to be used only in run-time
+document.body.appendChild(webstore)// DEV_NOTE # adding to DOM is optional if it's planned to be used only in run-time
 /** 
 > HOW TO USE
 * - prefix [globalThis.] is optional, we can simply change 'version' as follows:
