@@ -22,7 +22,7 @@ export function registerGetterSetter(_thisArg){
                 })
 
         })
-    )
+    );
 }
 
 export function hasChanged(oldValue, newValue){
@@ -32,4 +32,10 @@ export function hasChanged(oldValue, newValue){
     else {
         return false;
     }
+}
+
+export function isFunction(input){
+    return (
+        typeof input === Function.name.toLowerCase()
+    );
 }
