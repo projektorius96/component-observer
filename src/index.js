@@ -1,24 +1,25 @@
-import { registerAttrs, registerGetterSetter, hasChanged } from './utils/index.js';
+import { registerAttrs, registerGetterSetter, hasChanged, isFunction } from './utils/index.js';
 export default function WEB_STORE(namespace, observings, lifecycle = {isMounted: null, isDestroyed: null, isObserved: null}){
 
     customElements.define(String( namespace ), class extends HTMLElement {
 
         static get observedAttributes(){
-            return [
+
+            return ([
                 ...registerAttrs(observings)
-            ]
+            ]);
+
         }
     
         constructor() {
             
-            super();
-            registerGetterSetter(this);
+            registerGetterSetter( super() );
 
         }
 
         attributeChangedCallback(...params) {
 
-            if (typeof lifecycle.isObserved === Function.name.toLowerCase()){
+            if (isFunction(lifecycle.isObserved)){
                 lifecycle.isObserved(...params)
             }
 
@@ -26,7 +27,7 @@ export default function WEB_STORE(namespace, observings, lifecycle = {isMounted:
 
         connectedCallback(){
 
-            if (typeof lifecycle.isMounted === Function.name.toLowerCase()){
+            if (isFunction(lifecycle.isMounted)){
                 lifecycle.isMounted()
             }
 
@@ -34,7 +35,7 @@ export default function WEB_STORE(namespace, observings, lifecycle = {isMounted:
 
         disconnectedCallback(){
 
-            if (typeof lifecycle.isDestroyed === Function.name.toLowerCase()){
+            if (isFunction(lifecycle.isDestroyed)){
                 lifecycle.isDestroyed()
             }
 
@@ -44,7 +45,7 @@ export default function WEB_STORE(namespace, observings, lifecycle = {isMounted:
 
     return (
         Reflect.construct(customElements.get( String( namespace ) ) , [])
-    )
+    );
 
 }
 
