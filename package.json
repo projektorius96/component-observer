@@ -1,10 +1,11 @@
 {
   "name": "component-observer",
   "version": "0.0.3",
-  "type": "module",
   "author": "projektorius96",
+  "private": "true",
+  "type": "module",
   "devDependencies": {
-    "vite": "^5.0.12"
+    "vite": "^5.2.6"
   },
   "dependencies": {
     "idb": "^8.0.0"

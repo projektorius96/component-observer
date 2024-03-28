@@ -57,7 +57,7 @@ globalThis.webstore = WEB_STORE(
         isObserved: notifier,
         /* DEV_NOTE (!) # isMounted logs only on the very first load of web-component */
         isMounted: ()=> console.log("isMounted"),
-        /* DEV_NOTE # isDestroyed triggers when you remove web-component via DOM calls such as .removeChild(ref) | .remove(self) */
+        /* DEV_NOTE # isDestroyed triggers when you remove web-component via DOM calls such as .removeChild(ref) | ref.remove() */
         isDestroyed: async ()=> {
             console.log("isDestroyed")
             await deleteDB(`${WEB_STORE.name}_DB`)
