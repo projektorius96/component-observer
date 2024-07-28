@@ -1,4 +1,4 @@
-import canvasComponent from "./src/canvas-web-components/canvas-line.js";
+import canvasComponent from "./src/canvas-web-components/canvas-heart.js";
 import { openDB, deleteDB } from "idb";
 
 // PLAYGROUND # document.getElementsByTagName('canvas-line')[0].version = 2
@@ -6,8 +6,8 @@ canvasComponent.paint(
     canvasComponent.namespace,
     new Map([
         ['version', String(1)],
-        ['width', 800],
-        ['height', 600],
+        ['width', window.innerWidth* devicePixelRatio],
+        ['height', window.innerHeight* devicePixelRatio],
     ]),
     {
         isObserved: notifier,

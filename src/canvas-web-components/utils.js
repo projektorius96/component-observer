@@ -39,5 +39,5 @@ export function isFunction(input){
     );
 }
 
-export const getImplname = (HTML_x_Element)=> /HTML(.+)Element/.exec(HTML_x_Element?.name)?.[1].toLowerCase() ;
+export const getImplname = (HTML_x_Element)=> /HTML(.+)Element/.exec(HTML_x_Element?.name)?.[1].toLowerCase();
 export const getFilename = (import_meta_url)=> import_meta_url.split('/').at(-1).replace(/\..*/, '');
