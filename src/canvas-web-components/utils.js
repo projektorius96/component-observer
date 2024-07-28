@@ -39,10 +39,5 @@ export function isFunction(input){
     );
 }
 
-export const UNICODE = Object.create(null)
-    Object.assign(UNICODE, Object.freeze({
-        HYPHEN : RegExp('\u{002D}').source,
-        UNDERSCORE: RegExp('\u{005F}').source,
-    }));
-
-export const getInterface = (HTML_x_Element)=> /HTML(.+)Element/.exec(HTML_x_Element?.name)?.[1].toLowerCase() ;
+export const getImplname = (HTML_x_Element)=> /HTML(.+)Element/.exec(HTML_x_Element?.name)?.[1].toLowerCase() ;
+export const getFilename = (import_meta_url)=> import_meta_url.split('/').at(-1).replace(/\..*/, '');
