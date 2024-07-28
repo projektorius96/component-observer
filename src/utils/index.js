@@ -39,3 +39,9 @@ export function isFunction(input){
         typeof input === Function.name.toLowerCase()
     );
 }
+
+export const UNICODE = Object.create(null)
+    Object.assign(UNICODE, Object.freeze({
+        HYPHEN : RegExp('\u{002D}').source,
+        UNDERSCORE: RegExp('\u{005F}').source,
+    }));

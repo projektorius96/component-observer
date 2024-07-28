@@ -1,4 +1,4 @@
-import { registerAttrs, registerGetterSetter, hasChanged, isFunction } from './utils/index.js';
+import { registerAttrs, registerGetterSetter, hasChanged, isFunction, UNICODE } from './utils/index.js';
 export default function WEB_STORE(namespace, observings, lifecycle = {isMounted: null, isDestroyed: null, isObserved: null}){
 
     customElements.define(String( namespace ), class extends HTMLElement {
@@ -50,5 +50,5 @@ export default function WEB_STORE(namespace, observings, lifecycle = {isMounted:
 }
 
 WEB_STORE[hasChanged.name] = hasChanged;
-WEB_STORE.namespace = WEB_STORE.name.toLowerCase().replace("_", "-")
+WEB_STORE.namespace = WEB_STORE.name.toLowerCase().replace(UNICODE.UNDERSCORE, UNICODE.HYPHEN)
 
