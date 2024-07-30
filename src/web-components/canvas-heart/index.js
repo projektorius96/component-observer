@@ -5,9 +5,9 @@ import {
     isFunction, 
     getImplname,
     getFilename
-} from './utils.js';
+} from '../utils.js';
 
-export default class CANVAS_LINE {
+export default class CANVAS_COMPONENT {
 
     static [hasChanged.name] = hasChanged;
     static namespace = getFilename(import.meta.url);
@@ -87,6 +87,10 @@ export default class CANVAS_LINE {
             }
         
         });
+
+        return (
+            Reflect.construct( customElements.get( namespace ), [] )
+        );
 
     }
 
