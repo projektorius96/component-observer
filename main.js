@@ -1,15 +1,24 @@
 import canvas_heart from "./src/web-components/canvas-heart";
 import { openDB, deleteDB } from "idb";
 
+/* 
+POTENTIAL MILESTONES IF BRANCH GETS FORKED:
+- rename './src/' to './stage/' with dedicated 'canvas-stage' component specifically found at './stage/' pathspec
+- rename './web-components/' to './canvas-layers/' to signify its true purpose and hierarchical relationship to above, i.e. stage
+[see cont'd below]
+*/
+
 document.body.append(...[
     canvas_heart.paint(
-        canvas_heart.namespace,
+        canvas_heart.namespace/* := 'canvas-heart' as per idiomatic './src/web-components/<canvas-heart>' pathspec */
+        ,
         new Map([
-            /* PLAYGROUND # document.getComponentBy('canvas-heart').version = 2; */
+            /* PLAYGROUND # document.getComponentBy(canvas_heart.namespace || 'canvas-heart').version = 2; */
             ['version', String(1)],
             ['width', Number(window.innerWidth * devicePixelRatio)],
             ['height', Number(window.innerHeight * devicePixelRatio)],
-        ]),
+        ])
+        ,
         {
             isObserved: notifier,
             /* DEV_NOTE (!) # isMounted logs only on the very first load of web-component */
@@ -24,6 +33,8 @@ document.body.append(...[
     ,
 ])
 
+// [cont'd]
+// - optionally rename the notifier to statefulNotifier
 async function notifier(property, oldValue, newValue) {
 
     switch (property) {

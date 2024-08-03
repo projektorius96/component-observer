@@ -39,7 +39,17 @@ export function isFunction(input){
     );
 }
 
+/**
+ * @param {interface} HTML_x_Element - such as `HTMLCanvasElement`, see the line below for an explanation:
+ * @returns an example given for `HTMLCanvasElement`, function strips interface.name, so only the middle part stays as is, i.e. 'Canvas', but returned as 'canvas' (in lower-case)
+ */
 export const getImplname = (HTML_x_Element)=> /HTML(.+)Element/.exec(HTML_x_Element?.name)?.[1].toLowerCase();
+
+/**
+ * 
+ * @param {Object} import_meta_url - self explanatory [import.meta.url] of self module
+ * @returns self module file-based namespace
+ */
 export const getFilename = (import_meta_url)=> import_meta_url.split('/').at(-2);
 
 document.getComponentBy = function (componentNamespace, defaultIndex = 0){
