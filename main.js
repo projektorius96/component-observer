@@ -1,20 +1,20 @@
-import WEB_STORE from "./src/index.js";
+import GLOBAL_DB from "./src/index.js";
 import { openDB, deleteDB } from "idb";
 
 async function notifier(property, oldValue, newValue) {
     switch (property) {
         case 'version':
-            if (WEB_STORE.hasChanged(oldValue, newValue)){
+            if (GLOBAL_DB.hasChanged(oldValue, newValue)){
 
-                await openDB(`${WEB_STORE.name}_DB`, Number(newValue), {
+                await openDB(`${GLOBAL_DB.name}`, Number(newValue), {
                     async upgrade(db, oldVersion, newVersion, transaction, event){
 
                         /* console.log(oldVersion == oldValue, newVersion == newValue); */// [PASSING]
 
-                        if (!db.objectStoreNames.contains(WEB_STORE.namespace)) {
+                        if ( !db.objectStoreNames.contains(GLOBAL_DB.namespace) ) {
         
                             db
-                            .createObjectStore(WEB_STORE.namespace, {
+                            .createObjectStore(GLOBAL_DB.namespace, {
                                 autoIncrement: true
                             })
                             .put(
@@ -22,13 +22,14 @@ async function notifier(property, oldValue, newValue) {
                                 property
                             )
                     
-                        }
-                        else {
+                        } else {
             
                             // [SOLVED] # Failed to execute 'transaction' on 'IDBDatabase': A version change transaction is running
-                            transaction.done.then(async ()=>{/* as if transaction.oncomplete */
-                                await db.put(WEB_STORE.namespace, newValue, property)
-                            })
+                            transaction.done.then(
+                                async ()=>{/* DEV_NOTE # as if `transaction.oncomplete` was hooked in... */
+                                    await db.put(GLOBAL_DB.namespace, newValue, property)
+                                }
+                            )
 
                         }
                         
@@ -38,7 +39,7 @@ async function notifier(property, oldValue, newValue) {
             }
             break;
         default:
-            console.warn("SWITCH_STATEMENT : \nCURRENTLY YOU ARE OBSERVING NOTHING, IF YOU WANT TO OBSERVE SOMETHING,\nREGISTER YOUR OBSERVINGS as Map<Key, Value> PAIRS")
+            console.warn('CURRENTLY YOU ARE OBSERVING "NOTHING", IF YOU WANT TO OBSERVE "SOMETHING",\nREGISTER YOUR "observings" as "Map<Key, Value> pairs"')
     }
 }
 
@@ -50,8 +51,8 @@ const observings = new Map([
     ['version', String(1)],
 ]);
 
-globalThis.webstore = WEB_STORE(
-    WEB_STORE.namespace,
+globalThis.webstore = GLOBAL_DB(
+    GLOBAL_DB.namespace,
     observings,
     {
         isObserved: notifier,
@@ -60,7 +61,7 @@ globalThis.webstore = WEB_STORE(
         /* DEV_NOTE # isDestroyed triggers when you remove web-component via DOM calls such as .removeChild(ref) | ref.remove() */
         isDestroyed: async ()=> {
             console.log("isDestroyed")
-            await deleteDB(`${WEB_STORE.name}_DB`)
+            await deleteDB(`${GLOBAL_DB.name}_DB`)
         }
     }
 )

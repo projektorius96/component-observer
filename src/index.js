@@ -1,9 +1,16 @@
-import { registerAttrs, registerGetterSetter, hasChanged, isFunction, UNICODE } from './utils/index.js';
-export default function WEB_STORE(namespace, observings, lifecycle = {isMounted: null, isDestroyed: null, isObserved: null}){
+import { UNICODE, registerAttrs, registerGetterSetter, hasChanged, isFunction } from './utils/index.js';
+
+export default function GLOBAL_DB(namespace, observings, id, lifecycle) {
+
+    const {
+        isMounted = null, 
+        isDestroyed = null, 
+        isObserved = null
+    } = lifecycle;
 
     customElements.define(String( namespace ), class extends HTMLElement {
 
-        static get observedAttributes(){
+        static get observedAttributes() {
 
             return ([
                 ...registerAttrs(observings)
@@ -13,42 +20,37 @@ export default function WEB_STORE(namespace, observings, lifecycle = {isMounted:
     
         constructor() {
             
-            registerGetterSetter( super() );
+            registerGetterSetter( super() ) ;
+            this.id = id;
 
         }
 
         attributeChangedCallback(...params) {
 
-            if (isFunction(lifecycle.isObserved)){
-                lifecycle.isObserved(...params)
-            }
+            if (isFunction(/* lifecycle. */isObserved)) /* lifecycle. */isObserved(...params) ;
 
         }
 
-        connectedCallback(){
+        connectedCallback() {
 
-            if (isFunction(lifecycle.isMounted)){
-                lifecycle.isMounted()
-            }
+            if ( isFunction(/* lifecycle. */isMounted) ) /* lifecycle. */isMounted() ;
 
         }
 
-        disconnectedCallback(){
+        disconnectedCallback() {
 
-            if (isFunction(lifecycle.isDestroyed)){
-                lifecycle.isDestroyed()
-            }
+            if ( isFunction(/* lifecycle. */isDestroyed) ) /* lifecycle. */isDestroyed() ;
 
         }
     
     });
 
     return (
-        Reflect.construct(customElements.get( String( namespace ) ) , [])
+        Reflect.construct( customElements.get( String( namespace ) ) , [] )
     );
 
 }
 
-WEB_STORE[hasChanged.name] = hasChanged;
-WEB_STORE.namespace = WEB_STORE.name.toLowerCase().replace(UNICODE.UNDERSCORE, UNICODE.HYPHEN)
+GLOBAL_DB[hasChanged.name] = hasChanged;
+GLOBAL_DB.namespace = GLOBAL_DB.name.toLowerCase().replace(UNICODE.UNDERSCORE, UNICODE.HYPHEN)
 
