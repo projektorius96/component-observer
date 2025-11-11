@@ -1,6 +1,6 @@
 import { UNICODE, registerAttrs, registerGetterSetter, hasChanged, isFunction } from './utils/index.js';
 
-export default function GLOBAL_DB(namespace, observings, id, lifecycle) {
+export default function GLOBAL_DB({id, observings, lifecycle = {}}) {
 
     const {
         isMounted = null, 
@@ -8,49 +8,54 @@ export default function GLOBAL_DB(namespace, observings, id, lifecycle) {
         isObserved = null
     } = lifecycle;
 
-    customElements.define(String( namespace ), class extends HTMLElement {
+    const wc_namespace = GLOBAL_DB.name.toLowerCase().replace(UNICODE.UNDERSCORE, UNICODE.HYPHEN);
+    customElements.define(
 
-        static get observedAttributes() {
+        String(wc_namespace)
+        , 
+        class extends HTMLElement {
 
-            return ([
-                ...registerAttrs(observings)
-            ]);
+            static get observedAttributes() {
 
-        }
+                return ([
+                    ...registerAttrs(observings)
+                ]);
+
+            }
+        
+            constructor() {
+                
+                registerGetterSetter( super() ) ;
+                this.id = id;
+
+            }
+
+            attributeChangedCallback(...params) {
+
+                if (isFunction(/* lifecycle. */isObserved)) /* lifecycle. */isObserved(...params) ;
+
+            }
+
+            connectedCallback() {
+
+                if ( isFunction(/* lifecycle. */isMounted) ) /* lifecycle. */isMounted() ;
+
+            }
+
+            disconnectedCallback() {
+
+                if ( isFunction(/* lifecycle. */isDestroyed) ) /* lifecycle. */isDestroyed() ;
+
+            }
     
-        constructor() {
-            
-            registerGetterSetter( super() ) ;
-            this.id = id;
-
         }
-
-        attributeChangedCallback(...params) {
-
-            if (isFunction(/* lifecycle. */isObserved)) /* lifecycle. */isObserved(...params) ;
-
-        }
-
-        connectedCallback() {
-
-            if ( isFunction(/* lifecycle. */isMounted) ) /* lifecycle. */isMounted() ;
-
-        }
-
-        disconnectedCallback() {
-
-            if ( isFunction(/* lifecycle. */isDestroyed) ) /* lifecycle. */isDestroyed() ;
-
-        }
-    
-    });
+    );
 
     return (
-        Reflect.construct( customElements.get( String( namespace ) ) , [] )
+        Reflect.construct( customElements.get( String( wc_namespace ) ) , [] )
     );
 
 }
 
 GLOBAL_DB[hasChanged.name] = hasChanged;
-GLOBAL_DB.namespace = GLOBAL_DB.name.toLowerCase().replace(UNICODE.UNDERSCORE, UNICODE.HYPHEN)
 

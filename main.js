@@ -1,74 +1,36 @@
+import { openDB } from "idb";
 import GLOBAL_DB from "./src/index.js";
-import { openDB, deleteDB } from "idb";
-
-async function notifier(property, oldValue, newValue) {
-    switch (property) {
-        case 'version':
-            if (GLOBAL_DB.hasChanged(oldValue, newValue)){
-
-                await openDB(`${GLOBAL_DB.name}`, Number(newValue), {
-                    async upgrade(db, oldVersion, newVersion, transaction, event){
-
-                        /* console.log(oldVersion == oldValue, newVersion == newValue); */// [PASSING]
-
-                        if ( !db.objectStoreNames.contains(GLOBAL_DB.namespace) ) {
-        
-                            db
-                            .createObjectStore(GLOBAL_DB.namespace, {
-                                autoIncrement: true
-                            })
-                            .put(
-                                newValue,
-                                property
-                            )
-                    
-                        } else {
-            
-                            // [SOLVED] # Failed to execute 'transaction' on 'IDBDatabase': A version change transaction is running
-                            transaction.done.then(
-                                async ()=>{/* DEV_NOTE # as if `transaction.oncomplete` was hooked in... */
-                                    await db.put(GLOBAL_DB.namespace, newValue, property)
-                                }
-                            )
-
-                        }
-                        
-                    }
-                })
-
-            }
-            break;
-        default:
-            console.warn('CURRENTLY YOU ARE OBSERVING "NOTHING", IF YOU WANT TO OBSERVE "SOMETHING",\nREGISTER YOUR "observings" as "Map<Key, Value> pairs"')
-    }
-}
+import { notifier } from "./implementation/main.js";
 
 /** 
  * HTML@Attributes:{@link https://html.spec.whatwg.org/multipage/dom.html#attributes} 
- * @type {Map} - registers Map<Key, Value> pair(s)
+ * @typedef {Map}
 */
 const observings = new Map([
     ['version', String(1)],
 ]);
 
-globalThis.webstore = GLOBAL_DB(
-    GLOBAL_DB.namespace,
-    observings,
-    {
-        isObserved: notifier,
-        /* DEV_NOTE (!) # isMounted logs only on the very first load of web-component */
-        isMounted: ()=> console.log("isMounted"),
-        /* DEV_NOTE # isDestroyed triggers when you remove web-component via DOM calls such as .removeChild(ref) | ref.remove() */
-        isDestroyed: async ()=> {
-            console.log("isDestroyed")
-            await deleteDB(`${GLOBAL_DB.name}_DB`)
+document.body.appendChild(
+    GLOBAL_DB({
+        id: GLOBAL_DB.name.toLowerCase()
+        ,
+        observings
+        ,
+        lifecycle: {
+            isObserved: notifier.bind(null, {dependencies: { GLOBAL_DB, openDB }}),
+            /* DEV_NOTE (!) # isMounted logs only on the very first load of web-component */
+            isMounted: ()=> console.log(`${GLOBAL_DB.name} was mounted`),
+            /* DEV_NOTE # isDestroyed triggers when you remove web-component via DOM calls such as .removeChild(ref) | ref.remove() */
+            isDestroyed: async ()=> {
+                console.log(`${GLOBAL_DB.name} was destroyed`)
+                await deleteDB(`${GLOBAL_DB.name}`)
+            }
         }
-    }
-)
-
-document.body.appendChild(webstore)// DEV_NOTE # adding to DOM is optional if it's planned to be used only in run-time
+    })
+);
 /** 
 > HOW TO USE
-* - prefix [globalThis.] is optional, we can simply change 'version' as follows:
-* - webstore.version = 2 # "version has changed from 1 to 2"
+* - Run `document.body.children.global_db.version = 2;` [see cont'd]
+    [cont'd] # Open Application -> IndexedDB on your browser's DevTools and observe changes in real-time saying somethine like "version: 2".
+        NOTE # You may need Refresh, or close and Open Application -> IndexedDB, but it's there, believe me!
 */
