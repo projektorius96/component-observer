@@ -1,54 +1,61 @@
-import { registerAttrs, registerGetterSetter, hasChanged, isFunction, UNICODE } from './utils/index.js';
-export default function WEB_STORE(namespace, observings, lifecycle = {isMounted: null, isDestroyed: null, isObserved: null}){
+import { CONSANTS, registerAttrs, registerGetterSetter, hasChanged, isFunction } from './utils/index.js';
 
-    customElements.define(String( namespace ), class extends HTMLElement {
+export default function GLOBAL_DB({id, observings, lifecycle = {}}) {
 
-        static get observedAttributes(){
+    /* static  */ GLOBAL_DB[hasChanged.name] = hasChanged;
 
-            return ([
-                ...registerAttrs(observings)
-            ]);
+    const {
+        isMounted = null, 
+        isDestroyed = null, 
+        isObserved = null
+    } = lifecycle;
 
-        }
+    const wc_namespace = GLOBAL_DB.name.toLowerCase().replace(CONSANTS.UNICODE.UNDERSCORE, CONSANTS.UNICODE.HYPHEN);
+    customElements.define(
+
+        String(wc_namespace)
+        , 
+        class extends HTMLElement {
+
+            static get observedAttributes() {
+
+                return ([
+                    ...registerAttrs(observings)
+                ]);
+
+            }
+        
+            constructor() {
+                
+                registerGetterSetter( super() ) ;
+                this.id = id;
+
+            }
+
+            attributeChangedCallback(...params) {
+
+                if (isFunction(isObserved)) isObserved(...params) ;
+
+            }
+
+            connectedCallback() {
+
+                if ( isFunction(isMounted) ) isMounted() ;
+
+            }
+
+            disconnectedCallback() {
+
+                if ( isFunction(isDestroyed) ) isDestroyed() ;
+
+            }
     
-        constructor() {
-            
-            registerGetterSetter( super() );
-
         }
-
-        attributeChangedCallback(...params) {
-
-            if (isFunction(lifecycle.isObserved)){
-                lifecycle.isObserved(...params)
-            }
-
-        }
-
-        connectedCallback(){
-
-            if (isFunction(lifecycle.isMounted)){
-                lifecycle.isMounted()
-            }
-
-        }
-
-        disconnectedCallback(){
-
-            if (isFunction(lifecycle.isDestroyed)){
-                lifecycle.isDestroyed()
-            }
-
-        }
-    
-    });
+    );
 
     return (
-        Reflect.construct(customElements.get( String( namespace ) ) , [])
+        Reflect.construct( customElements.get( String( wc_namespace ) ) , [] )
     );
 
 }
-
-WEB_STORE[hasChanged.name] = hasChanged;
-WEB_STORE.namespace = WEB_STORE.name.toLowerCase().replace(UNICODE.UNDERSCORE, UNICODE.HYPHEN)
 
