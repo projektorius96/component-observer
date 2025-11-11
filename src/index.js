@@ -1,6 +1,8 @@
-import { UNICODE, registerAttrs, registerGetterSetter, hasChanged, isFunction } from './utils/index.js';
+import { CONSANTS, registerAttrs, registerGetterSetter, hasChanged, isFunction } from './utils/index.js';
 
 export default function GLOBAL_DB({id, observings, lifecycle = {}}) {
+
+    /* static  */ GLOBAL_DB[hasChanged.name] = hasChanged;
 
     const {
         isMounted = null, 
@@ -8,7 +10,7 @@ export default function GLOBAL_DB({id, observings, lifecycle = {}}) {
         isObserved = null
     } = lifecycle;
 
-    const wc_namespace = GLOBAL_DB.name.toLowerCase().replace(UNICODE.UNDERSCORE, UNICODE.HYPHEN);
+    const wc_namespace = GLOBAL_DB.name.toLowerCase().replace(CONSANTS.UNICODE.UNDERSCORE, CONSANTS.UNICODE.HYPHEN);
     customElements.define(
 
         String(wc_namespace)
@@ -32,19 +34,19 @@ export default function GLOBAL_DB({id, observings, lifecycle = {}}) {
 
             attributeChangedCallback(...params) {
 
-                if (isFunction(/* lifecycle. */isObserved)) /* lifecycle. */isObserved(...params) ;
+                if (isFunction(isObserved)) isObserved(...params) ;
 
             }
 
             connectedCallback() {
 
-                if ( isFunction(/* lifecycle. */isMounted) ) /* lifecycle. */isMounted() ;
+                if ( isFunction(isMounted) ) isMounted() ;
 
             }
 
             disconnectedCallback() {
 
-                if ( isFunction(/* lifecycle. */isDestroyed) ) /* lifecycle. */isDestroyed() ;
+                if ( isFunction(isDestroyed) ) isDestroyed() ;
 
             }
     
@@ -56,6 +58,4 @@ export default function GLOBAL_DB({id, observings, lifecycle = {}}) {
     );
 
 }
-
-GLOBAL_DB[hasChanged.name] = hasChanged;
 

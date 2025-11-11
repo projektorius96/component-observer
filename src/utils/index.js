@@ -6,7 +6,6 @@ export function registerAttrs(list) {
 }
 
 export /* void  */ function registerGetterSetter(_thisArg) {
-    
     const _attrs = registerGetterSetter.prototype._attrs;
     [...new Array(_attrs.length)].forEach((_, i)=>{
 
@@ -22,7 +21,6 @@ export /* void  */ function registerGetterSetter(_thisArg) {
                 })
 
         })
-
     return;
 }
 
@@ -41,14 +39,16 @@ export function isFunction(input) {
     );
 }
 
-export const UNICODE = 
+export const CONSANTS = 
     Object.freeze(
         Object.assign(
             Object.create(null)
             ,
             {
-                HYPHEN : RegExp('\u{002D}').source,
-                UNDERSCORE: RegExp('\u{005F}').source,
+                UNICODE: {
+                    HYPHEN : RegExp('\u{002D}').source,
+                    UNDERSCORE: RegExp('\u{005F}').source,
+                }
             }
         )
     )
