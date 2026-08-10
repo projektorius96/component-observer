@@ -39,7 +39,7 @@ export function isFunction(input) {
     );
 }
 
-export const CONSANTS = 
+export const CONSTANTS = 
     Object.freeze(
         Object.assign(
             Object.create(null)

@@ -1,4 +1,4 @@
-import { CONSANTS, registerAttrs, registerGetterSetter, hasChanged, isFunction } from './utils/index.js';
+import { CONSTANTS, registerAttrs, registerGetterSetter, hasChanged, isFunction } from './utils/index.js';
 
 export default function GLOBAL_DB({id, observings, lifecycle = {}}) {
 
@@ -10,7 +10,7 @@ export default function GLOBAL_DB({id, observings, lifecycle = {}}) {
         isObserved = null
     } = lifecycle;
 
-    const wc_namespace = GLOBAL_DB.name.toLowerCase().replace(CONSANTS.UNICODE.UNDERSCORE, CONSANTS.UNICODE.HYPHEN);
+    const wc_namespace = GLOBAL_DB.name.toLowerCase().replace(CONSTANTS.UNICODE.UNDERSCORE, CONSTANTS.UNICODE.HYPHEN);
     customElements.define(
 
         String(wc_namespace)
