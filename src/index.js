@@ -1,8 +1,8 @@
 import { CONSTANTS, registerAttrs, registerGetterSetter, hasChanged, isFunction } from './utils/index.js';
 
-export default function GLOBAL_DB({id, observings, lifecycle = {}}) {
+export default function Component_Observer({id, observings, lifecycle = {}}) {
 
-    /* static  */ GLOBAL_DB[hasChanged.name] = hasChanged;
+    /* static */ Component_Observer.hasChanged = hasChanged;
 
     const {
         isMounted = null, 
@@ -10,7 +10,7 @@ export default function GLOBAL_DB({id, observings, lifecycle = {}}) {
         isObserved = null
     } = lifecycle;
 
-    const wc_namespace = GLOBAL_DB.name.toLowerCase().replace(CONSTANTS.UNICODE.UNDERSCORE, CONSTANTS.UNICODE.HYPHEN);
+    const wc_namespace = Component_Observer.name.toLowerCase().replace(CONSTANTS.UNICODE.UNDERSCORE, CONSTANTS.UNICODE.HYPHEN);
     customElements.define(
 
         String(wc_namespace)
@@ -58,4 +58,3 @@ export default function GLOBAL_DB({id, observings, lifecycle = {}}) {
     );
 
 }
-

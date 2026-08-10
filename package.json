@@ -1,13 +1,15 @@
 {
   "name": "component-observer",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "author": "projektorius96",
-  "private": "true",
   "type": "module",
   "devDependencies": {
     "vite": "^8.2.1"
   },
   "dependencies": {
     "idb": "^8.0.3"
+  },
+  "exports" : {
+    "." : "./src/index.js"
   }
 }

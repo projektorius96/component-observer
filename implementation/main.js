@@ -1,66 +1,56 @@
+import Observer from "../src/index.js";
 import { ATTRIBUTE } from './utils.js';
 
-async function notifier({ dependencies }, property, oldValue, newValue) {
+const { min, max, value, step } = ATTRIBUTE;
+document.body.appendChild(
+    Observer({
+        id: 'input-schema'
+        ,
+        observings: new Map([
+            [ min , String(1) ],
+            [ max , String(360) ],
+            [ step , String(1) ],
+            [ value , String(1) ],
+        ])
+        ,
+        lifecycle: {
+            isMounted: ()=> console.log('mounted')
+            ,
+            isObserved
+            ,
+            isDestroyed: ()=> console.log('destroyed')
 
-    const 
-        { GLOBAL_DB, openDB } = dependencies;
+        }
+    })
+);
 
-    switch (property) {
-        case ATTRIBUTE.version :
-            if ( GLOBAL_DB.hasChanged(oldValue, newValue) ) {
+function isObserved(attribute, oldValue, newValue) {
 
-                await openDB(`${GLOBAL_DB.name}`, Number(newValue), {
+    switch (attribute) {
 
-                    async upgrade(db, oldVersion, newVersion, transaction, event) {
-
-                        /* console.log(oldVersion == oldValue, newVersion == newValue); */// [PASSING]
-                        console.log(`${property} was updated`);
-                        if ( !db.objectStoreNames.contains(GLOBAL_DB.name) ) {
-        
-                            db
-                            .createObjectStore(GLOBAL_DB.name, {autoIncrement: true})
-                            .put(
-                                newValue,
-                                property
-                            );
-                    
-                        } else {
-            
-                            // [SOLVED] # Failed to execute 'transaction' on 'IDBDatabase': A version change transaction is running
-                            transaction.done.then(
-                                async ()=>{/* DEV_NOTE # as if `transaction.oncomplete` was registered, do the following:.. */
-                                    await db.put(GLOBAL_DB.name, newValue, property);
-                                }
-                            );
-
-                        }
-                        
-                    }
-
-                });
-
+        case value : {
+            console.log(`Upgrading ${attribute} to ${newValue}`)
+            break;
+        }
+        case min : {
+            if (Observer.hasChanged(oldValue, newValue)) {
+                console.log(`Upgrading ${attribute} to ${newValue}`)
             }
             break;
-        default:
-            console.warn('CURRENTLY YOU ARE OBSERVING "NOTHING", IF YOU WANT TO OBSERVE "SOMETHING",\nREGISTER YOUR "observings" as "Map<Key, Value> pairs"')
+        }
+        case max : {            
+            if (Observer.hasChanged(oldValue, newValue)) {
+                console.log(`Upgrading ${attribute} to ${newValue}`)
+            }
+            break;
+        }
+        case step : {
+            if (Observer.hasChanged(oldValue, newValue)) {
+                console.log(`Upgrading ${attribute} to ${newValue}`)
+            }
+            break;
+        }
+
     }
-
-}
-
-async function disposer({ dependencies }) {
-
-    const {
-        GLOBAL_DB,
-        deleteDB
-    } = dependencies;
-
-    console.log(`${GLOBAL_DB.name} was destroyed`);
-    await deleteDB(`${GLOBAL_DB.name}`)
     
-}
-
-export {
-    ATTRIBUTE,
-    notifier,
-    disposer
 }
