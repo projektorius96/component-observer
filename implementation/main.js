@@ -1,10 +1,16 @@
 import Observer from "../src/index.js";
-import { ATTRIBUTE } from './utils.js';
+import { ID, ATTRIBUTE } from './utils.js';
+import { isObserved } from "./lifecycles/isObserved.js";
 
-const { min, max, value, step } = ATTRIBUTE;
+const
+    { input_schema } = ID
+    ,
+    { min, max, value, step } = ATTRIBUTE
+    ;
+    
 document.body.appendChild(
     Observer({
-        id: 'input-schema'
+        id: input_schema
         ,
         observings: new Map([
             [ min , String(1) ],
@@ -16,7 +22,7 @@ document.body.appendChild(
         lifecycle: {
             isMounted: ()=> console.log('mounted')
             ,
-            isObserved
+            isObserved: isObserved.bind(null, {Observer, min, max, step, value})
             ,
             isDestroyed: ()=> console.log('destroyed')
 
@@ -24,33 +30,7 @@ document.body.appendChild(
     })
 );
 
-function isObserved(attribute, oldValue, newValue) {
-
-    switch (attribute) {
-
-        case value : {
-            console.log(`Upgrading ${attribute} to ${newValue}`)
-            break;
-        }
-        case min : {
-            if (Observer.hasChanged(oldValue, newValue)) {
-                console.log(`Upgrading ${attribute} to ${newValue}`)
-            }
-            break;
-        }
-        case max : {            
-            if (Observer.hasChanged(oldValue, newValue)) {
-                console.log(`Upgrading ${attribute} to ${newValue}`)
-            }
-            break;
-        }
-        case step : {
-            if (Observer.hasChanged(oldValue, newValue)) {
-                console.log(`Upgrading ${attribute} to ${newValue}`)
-            }
-            break;
-        }
-
-    }
-    
-}
+/**
+ * @debugger
+ */
+console.log(document.getElementById(input_schema));// # PASSING
